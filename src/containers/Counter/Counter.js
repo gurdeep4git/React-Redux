@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import CounterControl from "../../components/CounterControl/CounterControl";
 import CounterOutput from "../../components/CounterOutput/CounterOutput";
 
+import * as actionTypes from "../../store/actions";
+
 class Counter extends Component {
     render() {
         return (
@@ -26,7 +28,9 @@ class Counter extends Component {
                     clicked={this.props.substractCounter}
                 />
                 <hr />
-                <button onClick={this.props.storeCounter}>Store Counter</button>
+                <button onClick={() => this.props.storeCounter(this.props.ctr)}>
+                    Store Counter
+                </button>
                 <ul>
                     {this.props.storedResults.map(elem => (
                         <li
@@ -44,21 +48,26 @@ class Counter extends Component {
 
 const mapStateToProps = state => {
     return {
-        ctr: state.counter,
-        storedResults: state.results
+        ctr: state.ctrReducer.counter,
+        storedResults: state.rsltReducer.results
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        incrementCounter: () => dispatch({ type: "INCREMENT" }),
-        decrementCounter: () => dispatch({ type: "DECREMENT" }),
-        addCounter: () => dispatch({ type: "ADD", payload: { value: 10 } }),
+        incrementCounter: () => dispatch({ type: actionTypes.INCREMENT }),
+        decrementCounter: () => dispatch({ type: actionTypes.DECREMENT }),
+        addCounter: () =>
+            dispatch({ type: actionTypes.ADD, payload: { value: 10 } }),
         substractCounter: () =>
-            dispatch({ type: "SUBSTRACT", payload: { value: 10 } }),
-        storeCounter: () => dispatch({ type: "STORE_COUNTER" }),
+            dispatch({ type: actionTypes.SUBSTRACT, payload: { value: 10 } }),
+        storeCounter: counter =>
+            dispatch({
+                type: actionTypes.STORE_COUNTER,
+                payload: { counter: counter }
+            }),
         deleteCounter: id =>
-            dispatch({ type: "DELETE_COUNTER", payload: { id: id } })
+            dispatch({ type: actionTypes.DELETE_COUNTER, payload: { id: id } })
     };
 };
 
